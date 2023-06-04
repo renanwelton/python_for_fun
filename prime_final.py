@@ -62,8 +62,11 @@ def main():
             primes = primes_between(num1, num2)
             if primes == False:
                 print("You typed the same number.")
-            if primes == True:
-                print("There are no primes between", num1, "and", str(num2)+".")
+            elif primes == True:
+                print("There's primes between", num1, "and", str(num2)+".")
+            else:
+                print()
+                print("There's", primes, "primes between", num1, "and", str(num2)+".")
             print()
       
         if choose == "5":
@@ -75,7 +78,7 @@ def main():
                     num = 0
                 print()
                 print_prime(int(num), -1)
-
+            
 def prime_check(num):
     div = 2
     if num >= 0:
@@ -100,20 +103,20 @@ def primes_between(num1, num2):
         return False
     else:
         primes = 0
-        if num1 < num2:
-            while num1 < num2 - 1:
-                num1 = num1 + 1
-                if prime_check(num1) == True:
-                    print(num1)
-                    primes = primes + 1
-        if num1 > num2: 
-            while num1 > num2 + 1:
-                num1 = num1 - 1
-                if prime_check(num1) == True:
-                    print(num1)
-                    primes = primes + 1
+        while num1 < num2 - 1:
+            num1 = num1 + 1
+            if prime_check(num1) == True:
+                print(num1)
+                primes = primes + 1
+        while num1 > num2 + 1:
+            num1 = num1 - 1
+            if prime_check(num1) == True:
+                print(num1)
+                primes = primes + 1
         if primes == 0:
             return True
+        else:
+            return primes
         
 def next_prime(num):
     while prime_check(num + 1) == False:
