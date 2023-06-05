@@ -20,7 +20,7 @@ def main():
     if choose in options:
         
         if choose == "1":
-            num = int(input("What number do you want to check? "))
+            num = ensure_int()
             print()
             if prime_check(num) == True:
                 print("Yes,", num, "is prime.")
@@ -129,5 +129,17 @@ def prev_prime(num):
     while prime_check(num - 1) == False:
         num = num - 1
     return num - 1
+
+def ensure_int():
+    while True:
+        num = input()
+        if num in yes:
+            return 0
+        else:
+            try:
+                num = int(num)
+                return num
+            except ValueError:
+                print("You must type an integer!")
 
 main()

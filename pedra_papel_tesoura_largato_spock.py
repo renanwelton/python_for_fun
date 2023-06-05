@@ -9,28 +9,20 @@ spock =   ['Spock',   ['Tesoura', 'Pedra'  ]]
 lista_jogadas = [None, pedra, papel, tesoura, lagarto, spock]
 jogadas_validas = ['1', '2', '3', '4', '5']
 
-def menu():
-    print()
-    print('Vamos jogar Pedra-Papel-Tesoura-Lagarto-Spock?')
-    print()
-    lista_opcoes = ['1 - Pedra', '2 - Papel', '3 - Tesoura', '4 - Lagarto', '5 - Spock']
-    for item in lista_opcoes:
-        print(item)
-
 def main():
-    print()
+    print('\nVamos jogar Pedra-Papel-Tesoura-Lagarto-Spock?')
+    print('\n1 - Pedra\n2 - Papel\n3 - Tesoura\n4 - Lagarto\n5 - Spock\n')
     usuario_jogou = jogada_usuario()
     computador_jogou = jogada_computador()
     escolhas_jogadores = usuario_jogou[:1] + computador_jogou[:1]
     mensagem_vitoria(escolhas_jogadores)
     if usuario_jogou[0] is computador_jogou[0]:
-        print('Empate, tente outra vez!')
+        print('EMPATE, tente outra vez!')
         main()
     elif usuario_jogou[0] in computador_jogou[1]:
-        print('Computador venceu!')
+        print('\nCOMPUTADOR VENCEU!\n')
     else:
-        print('Você venceu!')
-    print()
+        print('\nVOCÊ VENCEU!\n')
 
 def jogada_usuario():
     jogada = None
@@ -39,13 +31,12 @@ def jogada_usuario():
         if not jogada in jogadas_validas:
             print('Digite um valor válido (1-5).')
     jogada = int(jogada)
-    print()
-    print('Você escolheu', lista_jogadas[jogada][0])
+    print('\nVocê escolheu', lista_jogadas[jogada][0], end=', ')
     return lista_jogadas[jogada]
 
 def jogada_computador():
     jogada = random.randint(1,5)
-    print('Computador escolheu', lista_jogadas[jogada][0])
+    print('Computador escolheu', lista_jogadas[jogada][0] + '.\n')
     return lista_jogadas[jogada]
 
 def mensagem_vitoria(escolha_jogadores):
@@ -66,5 +57,4 @@ def mensagem_vitoria(escolha_jogadores):
             if escolha_jogadores[0] != escolha_jogadores[1]:
                 print(lista[2])
 
-menu()
 main()
