@@ -20,39 +20,31 @@ def main():
     if choose in options:
         
         if choose == "1":
-            num = ensure_int()
-            print()
+            ask = "What number do you want to check?"
+            num = ensure_int(ask)
             if prime_check(num) == True:
-                print("Yes,", num, "is prime.")
-                print()
+                print("Yes,", num, "is prime.\n")
             else:
-                print("No,", num, "is not prime.")
-                print()
+                print("No,", num, "is not prime.\n")
                 
         if choose == "2":
-            num = input("Starting number (default = 0): ")
-            if num in [""]:
-                num = 0
-                print()
-            else:
-                num = int(num)
-            loop = int(input("How many primes do you want to print? "))
+            ask = "Starting number (default = 0):"
+            num = ensure_int(ask)
+            ask = "How many primes do you want to print?"
+            loop = ensure_int(ask)
             if loop <= 0:
-                print()
                 print("Well, see you later!")
-                print()
             else:  
-                print()
                 print_prime(num, loop)
                 print()
 
         if choose == "3":
-            num = int(input("Previous and next primes of what number? "))
-            print()
-            if num <= 2:
-                print(num, "has no previous primes. The next is", next_prime(num))
+            ask = "Previous and next primes of what number?"
+            num = ensure_int(ask)
+            if prev_prime(num) == False:
+                print(num, "has no previous primes. The next is", str(next_prime(num)) + ".")
             else:
-                print("The previous prime of", num, "is", str(prev_prime(num)) + ".", "The next is", next_prime(num))
+                print("The previous prime of", num, "is", str((prev_prime(num))) + '.', "The next is", str(next_prime(num)) + ".")
             print()
     
         if choose == "4":
@@ -130,7 +122,8 @@ def prev_prime(num):
         num = num - 1
     return num - 1
 
-def ensure_int():
+def ensure_int(ask):
+    print(ask, end = " ")
     while True:
         num = input()
         if num in yes:
@@ -138,6 +131,7 @@ def ensure_int():
         else:
             try:
                 num = int(num)
+                print()
                 return num
             except ValueError:
                 print("You must type an integer!")
