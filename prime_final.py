@@ -64,7 +64,6 @@ def check_prime(num):
             return False
         div = div + 1
         if div > sqrt or num == 2:
-            primes.append(num)
             return True
 
 def print_prime(num, loop):
