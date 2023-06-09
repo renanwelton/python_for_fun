@@ -31,7 +31,7 @@ def jogada_usuario():
         if not jogada in jogadas_validas:
             print('Digite um valor válido (1-5).')
     jogada = int(jogada)
-    print('\nVocê escolheu', lista_jogadas[jogada][0], end=', ')
+    print('\nVocê escolheu', lista_jogadas[jogada][0], end='. ')
     return lista_jogadas[jogada]
 
 def jogada_computador():
