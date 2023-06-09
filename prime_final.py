@@ -1,139 +1,126 @@
+## tell in operation 3 and 4 if the input is also prime
+
 import math
 
 options = ["1", "2", "3", "4", "5"]
 yes = ["Yes", "yes", "Y", "y", ""]
 
 def main():
-    print()
-    print("1 - Check if a given number is prime.")
+    print("\n --- WELCOME TO MY PROGRAM ---\n")
+    print("1 - Check if given number is prime.")
     print("2 - Print set amount of primes.")
     print("3 - Print next and previous primes of given number.")
     print("4 - Print all primes between two numbers")
-    print("5 - Generate primes indefinitely from any starting point.")
-    print()
-    print("To exit press anything else.")
-    print()
+    print("5 - Generate primes indefinitely from any starting point.\n")
+    print("To exit press anything else.\n")
     
-    choose = (input("Choose operation: "))
-    print()
+    choice = (input("Choose operation: "))
 
-    if choose in options:
+    if choice in options:
         
-        if choose == "1":
-            ask = "What number do you want to check?"
-            num = ensure_int(ask)
-            if prime_check(num) == True:
-                print("Yes,", num, "is prime.\n")
+        if choice == "1":
+            num = ensure_int("What number do you want to check?")
+            if check_prime(num) == True:
+                print("\nYes,", num, "is prime.")
             else:
-                print("No,", num, "is not prime.\n")
+                print("\nNo,", num, "is not prime.")
                 
-        if choose == "2":
-            ask = "Starting number (default = 0):"
-            num = ensure_int(ask)
-            ask = "How many primes do you want to print?"
-            loop = ensure_int(ask)
+        if choice == "2":
+            num = ensure_int("Starting number (default 0):")
+            loop = ensure_int("How many primes do you want to print?")
             if loop <= 0:
-                print("Well, see you later!")
-            else:  
-                print_prime(num, loop)
-                print()
-
-        if choose == "3":
-            ask = "Previous and next primes of what number?"
-            num = ensure_int(ask)
-            if prev_prime(num) == False:
-                print(num, "has no previous primes. The next is", str(next_prime(num)) + ".")
+                print("\nWell, see you later!")
             else:
-                print("The previous prime of", num, "is", str((prev_prime(num))) + '.', "The next is", str(next_prime(num)) + ".")
-            print()
+                print()
+                print_prime(num, loop)
+
+        if choice == "3":
+            num = ensure_int("Previous and next primes of what number?")
+            if prev_prime(num) == False:
+                print("\n" + num, "has no previous primes. The next is", str(next_prime(num)) + ".")
+            else:
+                print("\n" + "The previous prime of", num, "is", str((prev_prime(num))) + '.', "The next is", str(next_prime(num)) + ".")
     
-        if choose == "4":
-            num1 = int(input("Starting number: "))
-            num2 = int(input("Finishing number: "))
-            print()
+        if choice == "4":
+            num1 = ensure_int("Starting number (default 0):")
+            num2 = ensure_int("Finishing number:")
             primes = primes_between(num1, num2)
             if primes == False:
-                print("You typed the same number.")
-            elif primes == True:
-                print("There's primes between", num1, "and", str(num2)+".")
+                print("\nYou typed the same number.")
+            elif primes == None:
+                print("\nThere's no primes between", num1, "and", str(num2)+".")
             else:
-                print()
-                print("There's", primes, "primes between", num1, "and", str(num2)+".")
-            print()
+                print("\nThere's", len(primes), "primes between", num1, "and", str(num2)+".\n")
+                for prime in primes:
+                    print(prime)
       
-        if choose == "5":
-            cont = input("This operation will only stop if the program is forcibly closed. Do you want to continue? (Y/n) ")
-            print()
+        if choice == "5":
+            cont = input("\nThis operation will only stop if the program is forcibly closed. Do you want to continue? (Y/n) ")
             if cont in yes:
-                num = input("Starting number (default = 0): ")
-                if num in [""]:
-                    num = 0
-                print()
+                num = ensure_int("Starting number (default 0):")
                 print_prime(int(num), -1)
+    print()
             
-def prime_check(num):
+def check_prime(num):
     div = 2
-    if num >= 0:
+    if num > 0:
         sqrt = math.sqrt(num)
     while True:
         if num % div == 0 and num != 2 or num < 2:
             return False
-        else:
-            div = div + 1
-            if div > sqrt or num == 2:
-                return True
+        div = div + 1
+        if div > sqrt or num == 2:
+            return True
 
-def print_prime(num, loop): ## passing a negative value to loop causes it to loop indefinitely ##
+def print_prime(num, loop): ## Passing a negative value to loop causes it to loop indefinitely ##
     while not loop == 0:
-        if prime_check(num) == True:
+        if check_prime(num) == True:
             print(num) 
             loop = loop - 1
-        num = num + 1
+        num += 1
 
-def primes_between(num1, num2):
+def primes_between(num1, num2): ## heavy rewrite need! 
     if num1 == num2:
         return False
+    primes = []
+    while num1 < num2 - 1:
+        num1 = num1 + 1
+        if check_prime(num1) == True:
+            primes.append(num1)
+    while num1 > num2 + 1:
+        num1 = num1 - 1
+        if check_prime(num1) == True:
+            primes.append(num1)
+    if len(primes) == 0:
+        return None
     else:
-        primes = 0
-        while num1 < num2 - 1:
-            num1 = num1 + 1
-            if prime_check(num1) == True:
-                print(num1)
-                primes = primes + 1
-        while num1 > num2 + 1:
-            num1 = num1 - 1
-            if prime_check(num1) == True:
-                print(num1)
-                primes = primes + 1
-        if primes == 0:
-            return True
-        else:
-            return primes
-        
+        return primes
+      
 def next_prime(num):
-    while prime_check(num + 1) == False:
-        num = num + 1
-    return num + 1
+    num += 1
+    while check_prime(num) == False:
+        num += 1
+    return num 
 
 def prev_prime(num):
     if num <= 2:
         return False
-    while prime_check(num - 1) == False:
-        num = num - 1
-    return num - 1
+    num -= 1
+    while check_prime(num) == False:
+        num -= 1
+    return num
 
 def ensure_int(ask):
-    print(ask, end = " ")
     while True:
+        print("\n" + ask, end = " ")
         num = input()
-        if num in yes:
+        if num in [""]:
             return 0
         else:
             try:
                 num = int(num)
-                print()
                 return num
             except ValueError:
-                print("You must type an integer!")
+                print("\nYou must type an integer!")
 
 main()
