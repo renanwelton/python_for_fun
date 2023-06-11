@@ -1,63 +1,79 @@
-def computador_escolhe_jogada(n,m):
+import random
+
+computer_always_wins = True
+
+def ensure_int():
+    while True:
+        try:
+            num = int(input(">>> "))
+            return num
+        except ValueError:
+            print("Kinda hard to play with that, type something else.")
+
+def computer_play(n,m):
     m_original = m
     if m >= n:
-            print("Computador removeu", n, "peças.")
+            print("Computer removed", n, "pieces.")
             return n
     while m > 0:
         if (n - m) % (m_original + 1) == 0:
-            print("Computador removeu", m, "peças.")
+            print("Computer removed", m, "pieces.")
             return m
         else:
             m = m - 1
-    print("Computador removeu", m_original, "peças.")
+    print("Computer removed", m_original, "pieces.")
     return m_original
 
-def usuario_escolhe_jogada(n,m):
+def user_play(n,m):
     while True:
-        remover = int(input("Quantas peças você vai tirar? "))
-        if remover > n:
-            print("O tabuleiro só tem", n, "peças e o limite por rodada é", m, "peças.")
-        elif remover > m:
-            print("Você não pode remover mais que", m, "peças por vez.")
-        elif remover <= 0:
-            print("Você não pode remover", remover, "peças.")    
+        print('How many pieces you want to remove?')
+        remove = ensure_int()
+        if remove > n:
+            print("The board only has", n, "pieces.")
+        elif remove > m:
+            print("You cannot remove more than", m, "pieces at a time.")
+        elif remove <= 0:
+            print("You can't remove", remove, "pieces.")    
         else:
-            return remover
+            return remove
 
 def partida():
     n, m = 0, 0
     while n <= 0:
-        n = int(input("Quantas peças? "))
+        print("Total of pieces on the board: ")
+        n = ensure_int()
         if n <= 0:
-            print("Não é possível iniciar o jogo com", n, "peças.")
+            print("It's not possible to start the game with", n, "pieces.")
     while m <= 0:
-        m = int(input("Limite de peças por jogada? "))
+        print("Limit of pieces to be removed at a time:")
+        m = ensure_int()
         if m <= 0:
-            print("Não é possível jogar removendo", m, "peças por rodada.")
+            print("It's not possible to play removing", m, "pieces per turn.")
  
-    vez_do_computador = None
-    if vez_do_computador == None:
+    computer_turn = None
+
+    if computer_turn == None and computer_always_wins == True:
         if n % (m + 1) == 0:
-            print("Você começa!")
-            vez_do_computador = False
+            print("You start!")
+            computer_turn = False
         else:
-            print("Computador começa!")
-            vez_do_computador = True
+            print("Computer starts!")
+            computer_turn = True
     
     while not n == 0:
-        if vez_do_computador == True:
-            n = n - computador_escolhe_jogada(n,m)
-            vez_do_computador = False
-            print("Restam", n, "peças")
+        if computer_turn == True:
+            n = n - computer_play(n,m)
+            computer_turn = False
+            print( n, "remaining pieces")
         else:
-            n = n - usuario_escolhe_jogada(n,m)
-            vez_do_computador = True
-            print("Restam", n, "peças")
+            n = n - user_play(n,m)
+            computer_turn = True
+            print(n, "remaining pieces")
     
-    if vez_do_computador == True:
+    if computer_turn == True:
         print("Parabéns, você ganhou??? De alguma forma kkkk")
         return True
-    if vez_do_computador == False:
+    if computer_turn == False:
         print("Fim do jogo! O computador ganhou!")
         return False
 
