@@ -1,13 +1,14 @@
 import random
 
-pedra =   ['Pedra',   ['Tesoura', 'Lagarto']]
-papel =   ['Papel',   ['Pedra', 'Spock'    ]]
-tesoura = ['Tesoura', ['Lagarto', 'Papel'  ]]
-lagarto = ['Lagarto', ['Spock', 'Papel'    ]]
-spock =   ['Spock',   ['Tesoura', 'Pedra'  ]]
+pedra = 'Pedra', ('Tesoura', 'Lagarto')
+papel = 'Papel', ('Pedra', 'Spock')
+tesoura = 'Tesoura', ('Lagarto', 'Papel')
+lagarto = 'Lagarto', ('Spock', 'Papel')   
+spock = 'Spock', ('Tesoura','Pedra')  
 
-lista_jogadas = [None, pedra, papel, tesoura, lagarto, spock]
-jogadas_validas = ['1', '2', '3', '4', '5']
+lista_jogadas = None, pedra, papel, tesoura, lagarto, spock
+
+jogadas_validas = '1', '2', '3', '4', '5'
 
 def main():
     print('\nVamos jogar Pedra-Papel-Tesoura-Lagarto-Spock?')
@@ -16,7 +17,7 @@ def main():
     computador_jogou = jogada_computador()
     escolhas_jogadores = usuario_jogou[:1] + computador_jogou[:1]
     mensagem_vitoria(escolhas_jogadores)
-    if usuario_jogou[0] is computador_jogou[0]:
+    if usuario_jogou[0] == computador_jogou[0]:
         print('EMPATE, tente outra vez!')
         main()
     elif usuario_jogou[0] in computador_jogou[1]:
@@ -40,18 +41,18 @@ def jogada_computador():
     return lista_jogadas[jogada]
 
 def mensagem_vitoria(escolha_jogadores):
-    mensagems = [
-    ['Tesoura', 'Papel', 'Tesoura corta Papel'],
-    ['Pedra', 'Papel', 'Papel cobre Pedra'],
-    ['Lagarto', 'Pedra', 'Pedra esmaga Lagarto'],
-    ['Spock', 'Lagarto', 'Largato envenena Spock'],
-    ['Tesoura', 'Spock', 'Spock esmaga Tesoura'],
-    ['Tesoura', 'Lagarto', 'Tesoura decapita Lagarto'],
-    ['Lagarto', 'Papel', 'Lagarto come Papel'],
-    ['Spock', 'Papel', 'Papel refuta Spock'],
-    ['Pedra', 'Spock', 'Spock vaporiza Pedra'],
-    ['Tesoura', 'Pedra', 'Pedra amassa Tesoura']
-]
+    mensagems = (
+    ('Tesoura', 'Papel', 'Tesoura corta Papel'),
+    ('Pedra', 'Papel', 'Papel cobre Pedra'),
+    ('Lagarto', 'Pedra', 'Pedra esmaga Lagarto'),
+    ('Spock', 'Lagarto', 'Largato envenena Spock'),
+    ('Tesoura', 'Spock', 'Spock esmaga Tesoura'),
+    ('Tesoura', 'Lagarto', 'Tesoura decapita Lagarto'),
+    ('Lagarto', 'Papel', 'Lagarto come Papel'),
+    ('Spock', 'Papel', 'Papel refuta Spock'),
+    ('Pedra', 'Spock', 'Spock vaporiza Pedra'),
+    ('Tesoura', 'Pedra', 'Pedra amassa Tesoura'))
+    
     for lista in mensagems:
         if escolha_jogadores[0] in lista and escolha_jogadores[1] in lista:
             if escolha_jogadores[0] != escolha_jogadores[1]:
