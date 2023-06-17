@@ -37,7 +37,7 @@ def user_play(n,m):
         else:
             return remove
 
-def partida():
+def game_start():
     n, m = 0, 0
     while n <= 0:
         print("Total of pieces on the board: ")
@@ -59,7 +59,12 @@ def partida():
         else:
             print("Computer starts!")
             computer_turn = True
-    
+    else:
+        if random.randint(1,2) == 1:
+            computer_turn == False
+        else:
+            computer_turn == True
+
     while not n == 0:
         if computer_turn == True:
             n = n - computer_play(n,m)
@@ -71,32 +76,31 @@ def partida():
             print(n, "remaining pieces")
     
     if computer_turn == True:
-        print("Parabéns, você ganhou??? De alguma forma kkkk")
+        print("End of the game! Somehow you won!")
         return True
     if computer_turn == False:
-        print("Fim do jogo! O computador ganhou!")
+        print("End of the game! Computer won!")
         return False
 
-def campeonato():
-    print("Bem-vindo ao jogo do NIM! Escolha:\n1 - Para jogar uma partida isolada.\n2 - Para jogar um campeonato.")
-    escolha = int(input("Qual a sua escolha? "))
-    if escolha == 1:
-        print("Você escolheu jogar uma partida!")
-        partida()
-    if escolha == 2:
-        print("Você escolheu campeonato!")
-        partidas = 3
-        rodada = 1
-        computador = 0
-        usuario = 0
-        while partidas > 0:
-            print("**** Rodada", rodada, "****")
-            if partida() == False:
-                computador = computador + 1
+def main():
+    print("\nWecolme to NIM GAME!\n\n1 - To play one match.\n2 - To play championship.\n")
+    choice = ensure_int()
+    if choice == 1:
+        print("Let's play one match then...")
+        game_start()
+    if choice == 2:
+        print("Better out of 3 matches, let's go!")
+        games, round = 3, 1
+        comp, usr = 0, 0
+        while games > 0:
+            print("**** Round", round, "****")
+            if not game_start():
+                comp += 1
             else:
-                usuario = usuario + 1
-            partidas = partidas - 1
-            rodada = rodada + 1
-        print('Placar: Você', usuario, 'X', computador, 'Computador.')
+                usr += 1
+            games -= 1
+            round += 1
+        print('You', usr, 'X', comp, 'Computer.')
 
-campeonato()
+if __name__ == "__main__":
+    main()
