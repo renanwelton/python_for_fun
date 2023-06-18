@@ -1,5 +1,6 @@
 import math
 import time
+import os
 
 operations_choices = ("1", "2", "3", "4", "5")
 yes_all_poss = ("Yes", "yes", "Y", "y", "")
@@ -150,18 +151,24 @@ def list_print_format(list):
             print(item, end = ", ")
     print()
 
+def clear():
+    if os.name == 'nt':
+        _ = os.system('cls')
+    else:
+        _ = os.system('clear')
+
 if __name__ == "__main__":
     while True:
 
         if not main() == False:
             print("Press ENTER to go back to MENU. Anything else to EXIT.", end = " ")
         else:
-            print()
+            clear()
             break
 
         if input() in yes_all_poss:
             time.sleep(1)
             continue
         else:
-            print()
+            clear()
             break
