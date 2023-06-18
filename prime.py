@@ -5,7 +5,7 @@ import os
 operations_choices = ("1", "2", "3", "4", "5")
 yes_all_poss = ("Yes", "yes", "Y", "y", "")
 
-def main():
+def menu():
     print("\n --- WELCOME TO MY PROGRAM ---\n")
     print("1 - Check if given number is prime.")
     print("2 - Print set amount of primes.")
@@ -21,12 +21,12 @@ def main():
         if choice == "1":
             num = ensure_int("What number do you want to check?")
             if check_prime(num) == True:
-                print("\nYes,", num, "is prime.")
+                print(f"\nYes, {num} is prime.")
             else:
-                print("\nNo,", num, "is not prime.")
+                print(f"\nNo, {num} is not prime.")
                 
         if choice == "2":
-            num = ensure_int("Starting number (default 0):")
+            num = ensure_int("Starting number(0):")
             loop = ensure_int("How many primes do you want to print?")
             print()
             print_prime(num, loop)
@@ -34,9 +34,9 @@ def main():
         if choice == "3":
             num = ensure_int("Previous and next primes of what number?")
             if prev_prime(num) == False:
-                print("\n" + str(num), "has no previous primes. The next is", str(next_prime(num)) + ".")
+                print(f"\n{num} has no previous primes. The next is {next_prime(num)}.")
             else:
-                print("\nThe previous prime of", num, "is", str((prev_prime(num))) + '.', "The next is", str(next_prime(num)) + ".")
+                print(f"\nThe previous prime of {num} is {prev_prime(num)}. The next is {next_prime(num)}.")
     
         if choice == "4":
             num_1 = ensure_int("Starting number(0):")
@@ -45,9 +45,9 @@ def main():
             if primes_count == False:
                 print("You typed the same number.")
             elif primes_count == None:
-                print("\nThere's no primes between", num_1, "and", str(num_2)+".")
+                print(f"\nThere's no primes between {num_1} and {num_2}.")
             else:
-                print("\nThere's", len(primes_count), "primes between", num_1, "and", str(num_2)+".")
+                print(f"\nThere's {len(primes_count)} primes between {num_1} and {num_2}.")
                 if input("\nDo you want to print them? (Y/n) ") in yes_all_poss:
                     list_print_format(primes_count)
       
@@ -82,8 +82,8 @@ def print_prime(num, loop):
         num += 1
 
 def primes_between(num_1, num_2):
-    """ Finds out how many primes exist between 2 given numbers, excluding the numbers themselves.
-        Returns the number of primes after printing them. """
+    """ Finds out how many primes exist between 2 given numbers. 
+        Excludes the numbers themselves. """
     print("\nDon't worry in case you are stuck here, some calculations are being done.")
     primes_count = []
     if num_1 == num_2:
@@ -122,7 +122,7 @@ def ensure_int(ask):
     """ Works like input(), but ensures the input is an integer.
         Returns 0 by default. """
     while True:
-        print("\n" + ask, end = " ")
+        print(f"\n{ask}", end=" ")
         num = input()
         if num in [""]:
             return 0
@@ -143,12 +143,14 @@ def gen_primes_nonstop(num):
             break
 
 def list_print_format(list):
+    """ Prints every element in a list separating them by a comma.
+        The last element is printed with a dot. """
     print()
     for item in list:
         if item == list[-1]:
-            print(item, end = ".")
+            print(item, end=".")
         else:
-            print(item, end = ", ")
+            print(item, end=", ")
     print()
 
 def clear():
@@ -157,11 +159,11 @@ def clear():
     else:
         _ = os.system('clear')
 
-if __name__ == "__main__":
+def main():
     while True:
 
-        if not main() == False:
-            print("Press ENTER to go back to MENU. Anything else to EXIT.", end = " ")
+        if not menu() == False:
+            print("Press ENTER to go back to MENU. Anything else to EXIT.", end =" ")
         else:
             clear()
             break
@@ -172,3 +174,6 @@ if __name__ == "__main__":
         else:
             clear()
             break
+
+if __name__ == "__main__":
+    main()
