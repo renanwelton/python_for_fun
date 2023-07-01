@@ -5,8 +5,8 @@ import os
 
 class Primes:
     def prime_check(num):
-        """ Checks if a given number is prime. 
-            Returns correct value even for negative integers. """
+        """Checks if a given number is prime. 
+        Returns correct value even for negative integers."""
         if num == 2:
             return True
         if num < 2 or num % 2 == 0:
@@ -18,8 +18,8 @@ class Primes:
         return True
 
     def prime_print(num, loop):
-        """ Only prints prime numbers up to n times.
-            Passing a negative value to loop causes it to loop indefinitely. """
+        """Only prints prime numbers up to n times.
+        Passing a negative value to loop causes it to loop indefinitely."""
         while not loop == 0:
             if Primes.prime_check(num) == True:
                 print(num) 
@@ -27,8 +27,15 @@ class Primes:
             num += 1
 
     def primes_between(num_1, num_2):
-        """ Finds out how many primes exist between 2 given numbers. 
-            Excludes the numbers themselves. """
+        """Finds out how many primes exist between 2 given numbers. 
+        Excludes the numbers themselves.
+
+        Returns a list if any prime is found.
+        
+        Returns 'False' if the given numbers are the same.
+        
+        Returns 'None' if the are no primes between the given numbers.
+        """
         print("\nDon't worry in case you are stuck here, some calculations are being done.")
         primes_count = []
         if num_1 == num_2:
@@ -50,13 +57,14 @@ class Primes:
             return primes_count
     
     def prime_next(num):
-        """ Returns the next prime of a given number """
+        """Returns the next prime of a given number"""
         while not Primes.prime_check(num + 1):
             num += 1
         return num + 1
 
     def prime_prev(num):
-        """ Returns the previous prime of a given number bigger than 2 """
+        """Returns the previous prime of a given number bigger than 2.
+        Returns False otherwise."""
         if num <= 2:
             return False
         while not Primes.prime_check(num - 1):
@@ -66,8 +74,8 @@ class Primes:
     
 class AddFeatures:
     def ensure_int(ask):
-        """ Works like input(), but ensures the input is an integer.
-            Returns 0 by default. """
+        """Works like input(), but ensures the input is an integer.
+        Returns 0 by default."""
         while True:
             print(f"\n{ask}", end=" ")
             num = input()
@@ -80,7 +88,8 @@ class AddFeatures:
                 print("\nError! Type an integer, please.")
 
     def kb_inter_handle(func, *args):
-        """ Handles Keyboard Interruption. Receives a function and it's arguments separately. """
+        """Handles Keyboard Interruption.
+        Receives a function and it's arguments separately."""
         try:
             func(*args)
         except KeyboardInterrupt:
@@ -88,8 +97,8 @@ class AddFeatures:
             print("\nYou did the right thing, don't worry.")
 
     def list_print_format(list):
-        """ Prints every element in a list separating them by a comma.
-            The last element is printed with a dot. """
+        """Prints every element in a list separating them by a comma.
+        The last element is printed with a dot."""
         print()
         for item in list:
             if item == list[-1]:
@@ -182,3 +191,5 @@ class MainProgram:
 
 if __name__ == '__main__':
     MainProgram.main()
+
+Primes.primes_between()
