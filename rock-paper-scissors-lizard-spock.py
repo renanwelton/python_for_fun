@@ -6,6 +6,7 @@ scissors = ['Scissors', ['Lizard', 'Paper']]
 lizard = ['Lizard', ['Spock', 'Paper']]  
 spock = ['Spock', ['Scissors','Rocks']]  
 
+# None is here just to fix the index
 list_plays = None, rock, paper, scissors, lizard, spock
 
 valid_plays= ['1', '2', '3', '4', '5']
