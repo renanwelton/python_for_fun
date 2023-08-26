@@ -64,23 +64,28 @@ def prime_between(num_1, num_2):
     
 def single_core_benchmark():
     """Single-Thread performance test using Python.
-    Should not be used for anything other than dick measuring among friends"""
+
+    Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
+    That's why I multiply the result (in seconds) by 50.
+
+    Should not be used for anything other than dick measuring among friends."""
     pool = mp.Pool(processes=1)
     numbers = range(10_000_000)
     start = time.time()
     pool.map(prime_check, numbers)
     end = time.time()
-    return end - start
+    return int((end - start) * 50)
 
 def multi_core_benchmark():
-    """Multi-Thread performance test using Python
-    Should not be used for anything other than dick measuring among friends"""
+    """Multi-Thread performance test using Python.
+
+    Should not be used for anything other than dick measuring among friends."""
     pool = mp.Pool(processes=os.cpu_count())
     numbers = range(40_000_000)
     start = time.time()
     pool.map(prime_check, numbers)
     end = time.time()
-    return end - start
+    return int((end - start) * 50 * os.cpu_count())
 
 def prime_next(num):
     """Returns the next prime of a given number."""
@@ -192,16 +197,17 @@ def menu():
                 kb_inter_handler(prime_print, num, -1)
 
         if choice == "6":
-            print("\n1 - Single-Core\n2 - Multithreading")
+            print("\n1 - Singlecore\n2 - Multicore")
             choice = ensure_int("What's your choice?")
             if choice in [1, 2]:
+                print("\nDoing some math...\n")
                 if choice == 1:
                     print(single_core_benchmark())
                 if choice == 2:
                     print(multi_core_benchmark())
-
+            else:
+                pass
         print()
-
     else:
         return False
 
