@@ -1,8 +1,9 @@
 import math
 import time
 import os
+import multiprocessing as mp
 
-operations_choices = ("1", "2", "3", "4", "5")
+operations_choices = ("1", "2", "3", "4", "5", "6")
 yes_all_poss = ("Yes", "yes", "Y", "y", "")
 
 def prime_check(num):
@@ -39,31 +40,50 @@ def prime_between(num_1, num_2):
 
     Returns a list if any prime is found.
     
-    Returns 'False' if the given numbers are the same.
+    Returns 'False' if the given numbers are the same or if I borked the code.
     
     Returns 'None' if the are no primes between the given numbers.
     """
     print("\nDon't worry in case you are stuck here, some calculations are being done.")
     primes_count = []
-    if num_1 == num_2:
-        return False
-    
     if num_1 < num_2:
         for i in range(num_1 + 1, num_2):
             if prime_check(i):
                 primes_count.append(i)
-    if num_1 > num_2:
+    elif num_1 >num_2:
         for i in range(num_2 + 1, num_1):
             if prime_check(i):
-                primes_count.append(i)  
+                primes_count.append(i)
+    else:
+        return False
                 
     if len(primes_count) == 0:
         return None
     else:
         return primes_count
+    
+def single_core_benchmark():
+    """Single-Thread performance test using Python.
+    Should not be used for anything other than dick measuring among friends"""
+    pool = mp.Pool(processes=1)
+    numbers = range(10_000_000)
+    start = time.time()
+    pool.map(prime_check, numbers)
+    end = time.time()
+    return end - start
+
+def multi_core_benchmark():
+    """Multi-Thread performance test using Python
+    Should not be used for anything other than dick measuring among friends"""
+    pool = mp.Pool(processes=os.cpu_count())
+    numbers = range(40_000_000)
+    start = time.time()
+    pool.map(prime_check, numbers)
+    end = time.time()
+    return end - start
 
 def prime_next(num):
-    """Returns the next prime of a given number"""
+    """Returns the next prime of a given number."""
     while not prime_check(num + 1):
         num += 1
     return num + 1
@@ -124,7 +144,8 @@ def menu():
     print("2 - Print set amount of primes.")
     print("3 - Print next and previous primes of a number.")
     print("4 - Find primes between two numbers")
-    print("5 - Generate primes indefinitely.\n")
+    print("5 - Generate primes indefinitely.")
+    print("6 - Benchmarks.\n")
     print("To exit press anything else.\n")
 
     choice = (input("Choose operation: "))
@@ -169,7 +190,18 @@ def menu():
             if cont in yes_all_poss:
                 num = ensure_int("Starting number(0):")
                 kb_inter_handler(prime_print, num, -1)
+
+        if choice == "6":
+            print("\n1 - Single-Core\n2 - Multithreading")
+            choice = ensure_int("What's your choice?")
+            if choice in [1, 2]:
+                if choice == 1:
+                    print(single_core_benchmark())
+                if choice == 2:
+                    print(multi_core_benchmark())
+
         print()
+
     else:
         return False
 
