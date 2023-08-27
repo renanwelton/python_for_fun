@@ -6,6 +6,35 @@ import multiprocessing as mp
 operations_choices = ("1", "2", "3", "4", "5", "6")
 yes_all_poss = ("Yes", "yes", "Y", "y", "")
 
+
+class Benchmark:
+    points = 25000
+    cpu_count = os.cpu_count()
+    numbers = range(10_000_000)
+    
+    def singlecore_benchmark(self):
+        """Single-Thread performance test using Python.
+
+        Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
+        That's why I use 25k in points.
+
+        Should not be used for anything other than dick measuring among friends."""
+        pool = mp.Pool(processes=1)
+        start = time.time()
+        pool.map(prime_check, self.numbers)
+        end = time.time()
+        return int(self.points / (end - start))
+
+    def multicore_benchmark(self):
+        """Multi-Thread performance test using Python.
+
+        Should not be used for anything other than dick measuring among friends."""
+        pool = mp.Pool(processes=self.cpu_count()) 
+        start = time.time()
+        pool.map(prime_check, self.numbers)
+        end = time.time()
+        return int(self.points / (end - start))
+
 def prime_check(num):
     """Checks if a given integer is prime."""
     if num == 2:
@@ -61,34 +90,6 @@ def prime_between(num_1, num_2):
         return None
     else:
         return primes_count
-   
-def single_core_benchmark():
-    """Single-Thread performance test using Python.
-
-    Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
-    That's why I use 25k in points.
-
-    Should not be used for anything other than dick measuring among friends."""
-    points = 25000
-    pool = mp.Pool(processes=1)
-    numbers = range(10_000_000)
-    start = time.time()
-    pool.map(prime_check, numbers)
-    end = time.time()
-    return int(points / (end - start))
-
-def multi_core_benchmark():
-    """Multi-Thread performance test using Python.
-
-    Should not be used for anything other than dick measuring among friends."""
-    cpu_count = os.cpu_count()
-    points = 25000
-    pool = mp.Pool(processes=cpu_count)
-    numbers = range(10_000_000) 
-    start = time.time()
-    pool.map(prime_check, numbers)
-    end = time.time()
-    return int(points / (end - start))
 
 def prime_next(num):
     """Returns the next prime of a given number."""
@@ -104,8 +105,7 @@ def prime_prev(num):
     while not prime_check(num - 1):
         num -= 1
     return num - 1
-    
-    
+      
 def ensure_int(ask):
     """Works like input(), but ensures the input is an integer.
     Returns 0 by default."""
@@ -202,12 +202,13 @@ def menu():
         if choice == "6":
             print("\n1 - Singlecore\n2 - Multicore")
             choice = ensure_int("What's your choice?")
+            bm = Benchmark()
             if choice in [1, 2]:
                 print("\nDoing some math...\n")
                 if choice == 1:
-                    print(single_core_benchmark())
+                    print(bm.singlecore_benchmark())
                 if choice == 2:
-                    print(multi_core_benchmark())
+                    print(bm.multicore_benchmark())
             else:
                 pass
         print()
