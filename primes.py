@@ -61,31 +61,34 @@ def prime_between(num_1, num_2):
         return None
     else:
         return primes_count
-    
+   
 def single_core_benchmark():
     """Single-Thread performance test using Python.
 
     Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
-    That's why I multiply the result (in seconds) by 50.
+    That's why I use 25k in points.
 
     Should not be used for anything other than dick measuring among friends."""
+    points = 25000
     pool = mp.Pool(processes=1)
     numbers = range(10_000_000)
     start = time.time()
     pool.map(prime_check, numbers)
     end = time.time()
-    return int((end - start) * 50)
+    return int(points / (end - start))
 
 def multi_core_benchmark():
     """Multi-Thread performance test using Python.
 
     Should not be used for anything other than dick measuring among friends."""
-    pool = mp.Pool(processes=os.cpu_count())
-    numbers = range(40_000_000)
+    cpu_count = os.cpu_count()
+    points = 25000
+    pool = mp.Pool(processes=cpu_count)
+    numbers = range(10_000_000) 
     start = time.time()
     pool.map(prime_check, numbers)
     end = time.time()
-    return int((end - start) * 50 * os.cpu_count())
+    return int(points / (end - start))
 
 def prime_next(num):
     """Returns the next prime of a given number."""
