@@ -29,7 +29,7 @@ class Benchmark:
         """Multi-Thread performance test using Python.
 
         Should not be used for anything other than dick measuring among friends."""
-        pool = mp.Pool(processes=self.cpu_count()) 
+        pool = mp.Pool(processes=self.cpu_count) 
         start = time.time()
         pool.map(prime_check, self.numbers)
         end = time.time()
