@@ -8,17 +8,12 @@ YES = ("Yes", "yes", "Y", "y", "")
 
 
 class Benchmark:
-    points = 25000
-    cpu_count = os.cpu_count()
-    numbers = range(10_000_000)
+    points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
+    numbers = range(10_000_000) ## Tied-up to points (25k). Changing this also changes final score.
+    cpu_count = os.cpu_count() ## Just in case I ever need to use this more than once.
     
     def singlecore_benchmark(self):
-        """Single-Thread performance test using Python.
-
-        Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
-        That's why I use 25k in points.
-
-        Should not be used for anything other than dick measuring among friends."""
+        """Single-Thread performance test using Python."""
         pool = mp.Pool(processes=1)
         start = time.time()
         pool.map(po.prime_check, self.numbers)
@@ -26,9 +21,7 @@ class Benchmark:
         return int(self.points / (end - start))
 
     def multicore_benchmark(self):
-        """Multi-Thread performance test using Python.
-
-        Should not be used for anything other than dick measuring among friends."""
+        """Multi-Thread performance test using Python."""
         pool = mp.Pool(processes=self.cpu_count) 
         start = time.time()
         pool.map(po.prime_check, self.numbers)
@@ -71,42 +64,43 @@ class PrimeOperations:
 
         Returns a list if any prime is found.
         
-        Returns 'False' if the given numbers are the same or if I borked the code.
+        Returns 'False' if the given numbers are the same.
         
-        Returns 'None' if the are no primes between the given numbers.
-        """
+        Returns 'None' if the are no primes between the given numbers."""
         print("\nDon't worry in case you are stuck here, some calculations are being done.")
-        primes_count = []
+        primes_list = []
         if num_1 < num_2:
             for i in range(num_1 + 1, num_2):
                 if po.prime_check(i):
-                    primes_count.append(i)
-        elif num_1 >num_2:
+                    primes_list.append(i)
+        elif num_1 > num_2:
             for i in range(num_2 + 1, num_1):
                 if po.prime_check(i):
-                    primes_count.append(i)
+                    primes_list.append(i)
         else:
             return False
                     
-        if len(primes_count) == 0:
-            return None
+        if len(primes_list) > 0:
+            return primes_list
         else:
-            return primes_count
-
+            return None
+        
     def prime_next(self, num):
         """Returns the next prime of a given number."""
-        while not po.prime_check(num + 1):
+        num += 1
+        while not po.prime_check(num):
             num += 1
-        return num + 1
+        return num
 
     def prime_prev(self, num):
         """Returns the previous prime of a given number bigger than 2.
         Returns False otherwise."""
         if num <= 2:
             return False
+        num -= 1
         while not po.prime_check(num - 1):
             num -= 1
-        return num - 1
+        return num
       
 def ensure_int(ask):
     """Works like input(), but ensures the input is an integer.
@@ -164,65 +158,66 @@ def menu():
 
         if choice is 1:
             num = ensure_int("What number do you want to check?")
-            if po.prime_check(num) == True:
+            if po.prime_check(num):
                 print(f"\nYes, {num} is prime.")
             else:
                 print(f"\nNo, {num} is not prime.")
                 
-        if choice is 2:
+        elif choice is 2:
             num = ensure_int("Starting number(0):")
             loop = ensure_int("How many primes do you want to print?")
             print()
             po.prime_print(num, loop)
 
-        if choice is 3:
+        elif choice is 3:
             num = ensure_int("Previous and next primes of what number?")
-            if po.prime_prev(num) == False:
+            if po.prime_prev(num) is False:
                 print(f"\n{num} has no previous primes. The next is {po.prime_next(num)}.")
             else:
                 print(f"\nThe previous prime of {num} is {po.prime_prev(num)}. The next is {po.prime_next(num)}.")
     
-        if choice is 4:
+        elif choice is 4:
             num_1 = ensure_int("Starting number(0):")
             num_2 = ensure_int("Finishing number:")
-            primes_count = po.prime_between(num_1, num_2)
-            if primes_count == False:
+            primes_list = po.prime_between(num_1, num_2)
+            if primes_list is False:
                 print("You typed the same number.")
-            elif primes_count == None:
+            elif primes_list is None:
                 print(f"\nThere's no primes between {num_1} and {num_2}.")
             else:
-                print(f"\nThere's {len(primes_count)} primes between {num_1} and {num_2}.")
+                print(f"\nThere's {len(primes_list)} primes between {num_1} and {num_2}.")
                 if input("\nDo you want to print them? (Y/n) ") in YES:
-                    list_print_format(primes_count)
+                    list_print_format(primes_list)
     
-        if choice is 5:
+        elif choice is 5:
             cont = input("\nThis operation will only stop if you press CTRL + C. Do you want to continue? (Y/n) ")
             if cont in YES:
                 num = ensure_int("Starting number(0):")
                 kb_inter_handler(po.prime_print, num, -1)
 
-        if choice is 6:
+        elif choice is 6:
             print("\n1 - Singlecore\n2 - Multicore")
             choice = ensure_int("What's your choice?")
             if choice in [1, 2]:
                 print("\nDoing some math...\n")
-                if choice == 1:
+                if choice is 1:
                     print(bm.singlecore_benchmark())
-                if choice == 2:
+                if choice is 2:
                     print(bm.multicore_benchmark())
-        print()
     else:
         return False
 
 def main():
     clear()
     while True:
-        if menu() == False:
+        if menu() is False:
             clear()
             break
         else:
+            print()
             print("Press ENTER to go back to MENU. Anything else to EXIT.", end =" ")
-            if input() in YES:
+            answer = input()
+            if answer in YES:
                 time.sleep(1)
                 clear()
                 continue
