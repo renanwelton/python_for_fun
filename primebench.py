@@ -98,7 +98,7 @@ class PrimeOperations:
         if num <= 2:
             return False
         num -= 1
-        while not po.prime_check(num - 1):
+        while not po.prime_check(num):
             num -= 1
         return num
       
@@ -171,10 +171,12 @@ def menu():
 
         elif choice is 3:
             num = ensure_int("Previous and next primes of what number?")
-            if po.prime_prev(num) is False:
-                print(f"\n{num} has no previous primes. The next is {po.prime_next(num)}.")
+            prev = po.prime_prev(num)
+            next = po.prime_next(num)
+            if prev is False:
+                print(f"\n{num} has no previous primes. The next is {next}.")
             else:
-                print(f"\nThe previous prime of {num} is {po.prime_prev(num)}. The next is {po.prime_next(num)}.")
+                print(f"\nThe previous prime of {num} is {prev}. The next is {next}.")
     
         elif choice is 4:
             num_1 = ensure_int("Starting number(0):")
@@ -196,7 +198,7 @@ def menu():
                 kb_inter_handler(po.prime_print, num, -1)
 
         elif choice is 6:
-            print("\n1 - Singlecore\n2 - Multicore")
+            print("\n1 - Singlethead\n2 - Multithread")
             choice = ensure_int("What's your choice?")
             if choice in [1, 2]:
                 print("\nDoing some math...\n")
