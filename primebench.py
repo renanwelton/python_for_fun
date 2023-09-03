@@ -10,7 +10,7 @@ YES = ("Yes", "yes", "Y", "y", "")
 class Benchmark:
     points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
     numbers = range(10_000_000) ## Tied-up to points (25k). Changing this also changes final score.
-    cpu_count = os.cpu_count() ## Just in case I ever need to use this more than once.
+    cpu_count = os.cpu_count()
     
     def singlecore_benchmark(self):
         """Single-Thread performance test using Python."""
@@ -27,6 +27,16 @@ class Benchmark:
         pool.map(po.prime_check, self.numbers)
         end = time.time()
         return int(self.points / (end - start))
+    
+    def cpu_synthetic_load(self): ## W.I.P.
+        pool = mp.Pool(processes=self.cpu_count)
+        for i in range(1_000_000):
+            try:
+                pool.map(po.prime_check, self.numbers)
+            except KeyboardInterrupt:
+                time.sleep(1)
+                print("\nYou did the right thing, don't worry.")
+        pass
 
 
 class PrimeOperations:
@@ -156,20 +166,20 @@ def menu():
 
     if choice in OPERATIONS:
 
-        if choice is 1:
+        if choice == 1:
             num = ensure_int("What number do you want to check?")
             if po.prime_check(num):
                 print(f"\nYes, {num} is prime.")
             else:
                 print(f"\nNo, {num} is not prime.")
                 
-        elif choice is 2:
+        elif choice == 2:
             num = ensure_int("Starting number(0):")
             loop = ensure_int("How many primes do you want to print?")
             print()
             po.prime_print(num, loop)
 
-        elif choice is 3:
+        elif choice == 3:
             num = ensure_int("Previous and next primes of what number?")
             prev = po.prime_prev(num)
             next = po.prime_next(num)
@@ -178,7 +188,7 @@ def menu():
             else:
                 print(f"\nThe previous prime of {num} is {prev}. The next is {next}.")
     
-        elif choice is 4:
+        elif choice == 4:
             num_1 = ensure_int("Starting number(0):")
             num_2 = ensure_int("Finishing number:")
             primes_list = po.prime_between(num_1, num_2)
@@ -191,21 +201,23 @@ def menu():
                 if input("\nDo you want to print them? (Y/n) ") in YES:
                     list_print_format(primes_list)
     
-        elif choice is 5:
+        elif choice == 5:
             cont = input("\nThis operation will only stop if you press CTRL + C. Do you want to continue? (Y/n) ")
             if cont in YES:
                 num = ensure_int("Starting number(0):")
                 kb_inter_handler(po.prime_print, num, -1)
 
-        elif choice is 6:
-            print("\n1 - Singlethead\n2 - Multithread")
+        elif choice == 6:
+            print("\n1 - Singlethead\n2 - Multithread\n3 - Stress Test")
             choice = ensure_int("What's your choice?")
-            if choice in [1, 2]:
+            if choice in (range(1,4)):
                 print("\nDoing some math...\n")
-                if choice is 1:
+                if choice == 1:
                     print(bm.singlecore_benchmark())
-                if choice is 2:
+                if choice == 2:
                     print(bm.multicore_benchmark())
+                if choice == 3:
+                    bm.cpu_synthetic_load()
     else:
         return False
 
