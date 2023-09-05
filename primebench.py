@@ -1,7 +1,7 @@
 import math
 import time
 import os
-import multiprocessing as mp
+import multiprocessing
 
 OPERATIONS = (range(1,7))
 YES = ("Yes", "yes", "Y", "y", "")
@@ -14,32 +14,29 @@ class Benchmark:
     
     def singlecore_benchmark(self):
         """Single-Thread performance test using Python."""
-        pool = mp.Pool(processes=1)
+        pool = multiprocessing.Pool(processes=1)
         start = time.time()
-        pool.map(po.prime_check, self.numbers)
+        pool.map(prime.prime_check, self.numbers)
         end = time.time()
         return int(self.points / (end - start))
 
     def multicore_benchmark(self):
         """Multi-Thread performance test using Python."""
-        pool = mp.Pool(processes=self.cpu_count) 
+        pool = multiprocessing.Pool(processes=self.cpu_count) 
         start = time.time()
-        pool.map(po.prime_check, self.numbers)
+        pool.map(prime.prime_check, self.numbers)
         end = time.time()
         return int(self.points / (end - start))
     
-    def cpu_synthetic_load(self): ## W.I.P.
-        pool = mp.Pool(processes=self.cpu_count)
-        for i in range(1_000_000):
-            try:
-                pool.map(po.prime_check, self.numbers)
-            except KeyboardInterrupt:
-                time.sleep(1)
-                print("\nYou did the right thing, don't worry.")
-        pass
+    def cpu_synthetic_load(self):
+        """Synthetic CPU load using prime calculation."""
+        load = range(99_999_999)
+        pool = multiprocessing.Pool(processes=self.cpu_count)
+        while True:
+            pool.map(prime.prime_check, load)
 
 
-class PrimeOperations:
+class Primes:
     def prime_check(self, num):
         """Checks if a given integer is prime."""
         if num == 2:
@@ -63,7 +60,7 @@ class PrimeOperations:
             else:
                 num += 1
         while not loop == 0:
-            if po.prime_check(num):
+            if prime.prime_check(num):
                 print(num) 
                 loop = loop - 1
             num += 2
@@ -77,28 +74,63 @@ class PrimeOperations:
         Returns 'False' if the given numbers are the same.
         
         Returns 'None' if the are no primes between the given numbers."""
-        print("\nDon't worry in case you are stuck here, some calculations are being done.")
         primes_list = []
         if num_1 < num_2:
             for i in range(num_1 + 1, num_2):
-                if po.prime_check(i):
+                if prime.prime_check(i):
                     primes_list.append(i)
         elif num_1 > num_2:
             for i in range(num_2 + 1, num_1):
-                if po.prime_check(i):
+                if prime.prime_check(i):
                     primes_list.append(i)
         else:
             return False
                     
-        if len(primes_list) > 0:
-            return primes_list
-        else:
+        if len(primes_list) == 0:
             return None
+        else:
+            return primes_list
+
+    def list_prime_check(self, num):
+        """Instead of returning a boolean, returns 
+        the actual number so you can create a list."""
+        if num == 2:
+            return num
+        if num < 2 or num % 2 == 0:
+            return
+        sqrt = int(math.sqrt(num))
+        for div in range(3, sqrt+1, 2):
+            if num % div == 0:
+                return 
+        return num
+    
+    def fast_prime_between(self, num_1, num_2):
+        """Multitheaded version of primes between.
+        May crash due to limited RAM when computing a big range."""
+        temp_list = []
+        primes_list = []
+        pool = multiprocessing.Pool(processes=os.cpu_count())
+        if num_1 < num_2:
+            num_range = range(num_1+1, num_2)
+        elif num_1 > num_2:
+            num_range = range(num_1-1, num_2, -1)  
+        else:
+            return False
         
+        temp_list = pool.map(prime.list_prime_check, num_range)
+        for i in range(len(temp_list)):
+            if not temp_list[i] == None:
+                primes_list.append(temp_list[i])
+
+        if len(primes_list) == 0:
+            return None
+        else:
+            return primes_list
+
     def prime_next(self, num):
         """Returns the next prime of a given number."""
         num += 1
-        while not po.prime_check(num):
+        while not prime.prime_check(num):
             num += 1
         return num
 
@@ -108,7 +140,7 @@ class PrimeOperations:
         if num <= 2:
             return False
         num -= 1
-        while not po.prime_check(num):
+        while not prime.prime_check(num):
             num -= 1
         return num
       
@@ -162,13 +194,13 @@ def menu():
     print("6 - Benchmarks.\n")
     print("To exit press anything else.")
 
-    choice = (ensure_int("Choose operation:"))
+    choice = (ensure_int("Choose operation: "))
 
     if choice in OPERATIONS:
 
         if choice == 1:
             num = ensure_int("What number do you want to check?")
-            if po.prime_check(num):
+            if prime.prime_check(num):
                 print(f"\nYes, {num} is prime.")
             else:
                 print(f"\nNo, {num} is not prime.")
@@ -177,12 +209,12 @@ def menu():
             num = ensure_int("Starting number(0):")
             loop = ensure_int("How many primes do you want to print?")
             print()
-            po.prime_print(num, loop)
+            prime.prime_print(num, loop)
 
         elif choice == 3:
             num = ensure_int("Previous and next primes of what number?")
-            prev = po.prime_prev(num)
-            next = po.prime_next(num)
+            prev = prime.prime_prev(num)
+            next = prime.prime_next(num)
             if prev is False:
                 print(f"\n{num} has no previous primes. The next is {next}.")
             else:
@@ -191,33 +223,41 @@ def menu():
         elif choice == 4:
             num_1 = ensure_int("Starting number(0):")
             num_2 = ensure_int("Finishing number:")
-            primes_list = po.prime_between(num_1, num_2)
-            if primes_list is False:
-                print("You typed the same number.")
-            elif primes_list is None:
-                print(f"\nThere's no primes between {num_1} and {num_2}.")
-            else:
-                print(f"\nThere's {len(primes_list)} primes between {num_1} and {num_2}.")
-                if input("\nDo you want to print them? (Y/n) ") in YES:
-                    list_print_format(primes_list)
-    
+            print("\n1 - Fast calculation (may crash with high numbers due to high RAM usage)\n2 - Slow (but safe)")
+            choice = input("\nWhat's your choise? ")
+            if choice in range(1,3):
+                print("\nDon't worry in case you are stuck here, some calculations are being done.")
+                if choice == 1:
+                    primes_list = prime.fast_prime_between(num_1, num_2)
+                if choice == 2:
+                    primes_list = prime.prime_between(num_1, num_2)
+                if primes_list is False:
+                    print("\nYou typed the same number.")
+                elif primes_list is None:
+                    print(f"\nThere's no primes between {num_1} and {num_2}.")
+                else:
+                    print(f"\nThere's {len(primes_list)} primes between {num_1} and {num_2}.")
+                    if input("\nDo you want to print them? (Y/n) ") in YES:
+                        list_print_format(primes_list)
+        
         elif choice == 5:
             cont = input("\nThis operation will only stop if you press CTRL + C. Do you want to continue? (Y/n) ")
             if cont in YES:
                 num = ensure_int("Starting number(0):")
-                kb_inter_handler(po.prime_print, num, -1)
+                kb_inter_handler(prime.prime_print, num, -1)
 
         elif choice == 6:
-            print("\n1 - Singlethead\n2 - Multithread\n3 - Stress Test")
-            choice = ensure_int("What's your choice?")
-            if choice in (range(1,4)):
+            print("\n1 - Singlethead\n2 - Multithread\n3 - Stress Test (may crash due to high RAM usage)")
+            choice = input("\nWhat's your choice? ")
+            if choice in range(1,4):
                 print("\nDoing some math...\n")
                 if choice == 1:
-                    print(bm.singlecore_benchmark())
+                    print(bench.singlecore_benchmark())
                 if choice == 2:
-                    print(bm.multicore_benchmark())
+                    print(bench.multicore_benchmark())
                 if choice == 3:
-                    bm.cpu_synthetic_load()
+                    print("Press Ctrl + C to stop it.")
+                    bench.cpu_synthetic_load()
     else:
         return False
 
@@ -239,8 +279,8 @@ def main():
                 clear()
                 break
 
-po = PrimeOperations()
-bm = Benchmark()
+prime = Primes()
+bench = Benchmark()
 
 if __name__ == '__main__':
     main()
