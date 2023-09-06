@@ -11,7 +11,7 @@ class Benchmark:
     points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
     numbers = range(10_000_000) ## Tied-up to points (25k). Changing this also changes final score.
 
-    def get_cpu_core_count():
+    def get_cpu_core_count(self):
         cpu_count = os.cpu_count()
         return cpu_count
     
