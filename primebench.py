@@ -224,7 +224,7 @@ def menu():
             num_1 = ensure_int("Starting number(0):")
             num_2 = ensure_int("Finishing number:")
             print("\n1 - Fast calculation (may crash with high numbers due to high RAM usage)\n2 - Slow (but safe)")
-            choice = input("\nWhat's your choise? ")
+            choice = ensure_int("What's your choice?")
             if choice in range(1,3):
                 print("\nDon't worry in case you are stuck here, some calculations are being done.")
                 if choice == 1:
@@ -248,7 +248,7 @@ def menu():
 
         elif choice == 6:
             print("\n1 - Singlethead\n2 - Multithread\n3 - Stress Test (may crash due to high RAM usage)")
-            choice = input("\nWhat's your choice? ")
+            choice = ensure_int("What's your choice?")
             if choice in range(1,4):
                 print("\nDoing some math...\n")
                 if choice == 1:
@@ -264,7 +264,7 @@ def menu():
 def main():
     clear()
     while True:
-        if menu() is False:
+        if menu() == False:
             clear()
             break
         else:
