@@ -10,7 +10,10 @@ YES = ("Yes", "yes", "Y", "y", "")
 class Benchmark:
     points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
     numbers = range(10_000_000) ## Tied-up to points (25k). Changing this also changes final score.
-    cpu_count = os.cpu_count()
+
+    def get_cpu_core_count():
+        cpu_count = os.cpu_count()
+        return cpu_count
     
     def singlecore_benchmark(self):
         """Single-Thread performance test using Python."""
@@ -22,7 +25,7 @@ class Benchmark:
 
     def multicore_benchmark(self):
         """Multi-Thread performance test using Python."""
-        pool = multiprocessing.Pool(processes=self.cpu_count) 
+        pool = multiprocessing.Pool(processes=self.get_cpu_core_count()) 
         start = time.time()
         pool.map(prime.prime_check, self.numbers)
         end = time.time()
@@ -31,7 +34,7 @@ class Benchmark:
     def cpu_synthetic_load(self):
         """Synthetic CPU load using prime calculation."""
         load = range(99_999_999)
-        pool = multiprocessing.Pool(processes=self.cpu_count)
+        pool = multiprocessing.Pool(processes=self.get_cpu_core_count())
         while True:
             pool.map(prime.prime_check, load)
 
@@ -109,7 +112,7 @@ class Primes:
         May crash due to limited RAM when computing a big range."""
         temp_list = []
         primes_list = []
-        pool = multiprocessing.Pool(processes=os.cpu_count())
+        pool = multiprocessing.Pool(processes=bench.get_cpu_core_count())
         if num_1 < num_2:
             num_range = range(num_1+1, num_2)
         elif num_1 > num_2:
@@ -194,7 +197,7 @@ def menu():
     print("6 - Benchmarks.\n")
     print("To exit press anything else.")
 
-    choice = (ensure_int("Choose operation: "))
+    choice = (ensure_int("Choose operation:"))
 
     if choice in OPERATIONS:
 
