@@ -1,3 +1,9 @@
+## TO-DO: 
+## Show temps in real-time upon callig any Benchmark() method
+## Also print elapsed time in any Benchmark() method
+## Maybe add a dumb version of prime_check to reduce RAM usage when using pool.map
+## Pseudo GUI in the likes of cfdisk (Maybe someday)
+
 import math
 import time
 import os
@@ -5,38 +11,6 @@ import multiprocessing
 
 OPERATIONS = (range(1,7))
 YES = ("Yes", "yes", "Y", "y", "")
-
-
-class Benchmark:
-    points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
-    numbers = range(10_000_000) ## Tied-up to points (25k). Changing this also changes final score.
-
-    def get_cpu_core_count(self):
-        cpu_count = os.cpu_count()
-        return cpu_count
-    
-    def singlecore_benchmark(self):
-        """Single-Thread performance test using Python."""
-        pool = multiprocessing.Pool(processes=1)
-        start = time.time()
-        pool.map(prime.prime_check, self.numbers)
-        end = time.time()
-        return int(self.points / (end - start))
-
-    def multicore_benchmark(self):
-        """Multi-Thread performance test using Python."""
-        pool = multiprocessing.Pool(processes=self.get_cpu_core_count()) 
-        start = time.time()
-        pool.map(prime.prime_check, self.numbers)
-        end = time.time()
-        return int(self.points / (end - start))
-    
-    def cpu_synthetic_load(self):
-        """Synthetic CPU load using prime calculation."""
-        load = range(99_999_999)
-        pool = multiprocessing.Pool(processes=self.get_cpu_core_count())
-        while True:
-            pool.map(prime.prime_check, load)
 
 
 class Primes:
@@ -63,7 +37,7 @@ class Primes:
             else:
                 num += 1
         while not loop == 0:
-            if prime.prime_check(num):
+            if self.prime_check(num):
                 print(num) 
                 loop = loop - 1
             num += 2
@@ -80,11 +54,11 @@ class Primes:
         primes_list = []
         if num_1 < num_2:
             for i in range(num_1 + 1, num_2):
-                if prime.prime_check(i):
+                if self.prime_check(i):
                     primes_list.append(i)
         elif num_1 > num_2:
             for i in range(num_2 + 1, num_1):
-                if prime.prime_check(i):
+                if self.prime_check(i):
                     primes_list.append(i)
         else:
             return False
@@ -112,7 +86,7 @@ class Primes:
         May crash due to limited RAM when computing a big range."""
         temp_list = []
         primes_list = []
-        pool = multiprocessing.Pool(processes=bench.get_cpu_core_count())
+        pool = multiprocessing.Pool(processes=bench.cpu_count)
         if num_1 < num_2:
             num_range = range(num_1+1, num_2)
         elif num_1 > num_2:
@@ -120,7 +94,7 @@ class Primes:
         else:
             return False
         
-        temp_list = pool.map(prime.list_prime_check, num_range)
+        temp_list = pool.map(self.list_prime_check, num_range)
         for i in range(len(temp_list)):
             if not temp_list[i] == None:
                 primes_list.append(temp_list[i])
@@ -133,7 +107,7 @@ class Primes:
     def prime_next(self, num):
         """Returns the next prime of a given number."""
         num += 1
-        while not prime.prime_check(num):
+        while not self.prime_check(num):
             num += 1
         return num
 
@@ -143,15 +117,44 @@ class Primes:
         if num <= 2:
             return False
         num -= 1
-        while not prime.prime_check(num):
+        while not self.prime_check(num):
             num -= 1
         return num
-      
-def ensure_int(ask):
+
+class Benchmark:
+    points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
+    numbers = range(10_000_000) ## 10kk default. Tied-up to points (25k). Changing this also changes final score.
+    cpu_count = os.cpu_count()
+    
+    def singlecore_benchmark(self):
+        """Single-Thread performance test using Python."""
+        pool = multiprocessing.Pool(processes=1)
+        start = time.time()
+        pool.map(prime.prime_check, self.numbers)
+        end = time.time()
+        print(end - start)
+        return int(self.points / (end - start))
+
+    def multicore_benchmark(self):
+        """Multi-Thread performance test using Python."""
+        pool = multiprocessing.Pool(processes=self.cpu_count) 
+        start = time.time()
+        pool.map(prime.prime_check, self.numbers)
+        end = time.time()
+        return int(self.points / (end - start))
+    
+    def cpu_synthetic_load(self):
+        """Synthetic CPU load using prime calculation."""
+        load = range(99_999_999)
+        pool = multiprocessing.Pool(processes=self.cpu_count)
+        while True:
+            pool.map(prime.prime_check, load)
+
+def ensure_int(string):
     """Works like input(), but ensures the input is an integer.
     Returns 0 by default."""
     while True:
-        print(f"\n{ask}", end=" ")
+        print(f"\n{string}", end=" ")
         num = input()
         if num in [""]:
             return 0
@@ -234,9 +237,10 @@ def menu():
                     primes_list = prime.fast_prime_between(num_1, num_2)
                 if choice == 2:
                     primes_list = prime.prime_between(num_1, num_2)
-                if primes_list is False:
+
+                if primes_list == False:
                     print("\nYou typed the same number.")
-                elif primes_list is None:
+                elif primes_list == None:
                     print(f"\nThere's no primes between {num_1} and {num_2}.")
                 else:
                     print(f"\nThere's {len(primes_list)} primes between {num_1} and {num_2}.")
