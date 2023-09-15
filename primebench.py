@@ -1,7 +1,5 @@
 ## TO-DO: 
 ## Show temps in real-time upon callig any Benchmark() method
-## Also print elapsed time in any Benchmark() method
-## Maybe add a dumb version of prime_check to reduce RAM usage when using pool.map
 ## Pseudo GUI in the likes of cfdisk (Maybe someday)
 
 import math
@@ -26,6 +24,21 @@ class Primes:
                 return False
         return True
 
+    def dumb_prime_check(self, num):
+        """Checks every division up to 'num' and uses a while loop.
+        Should be slow enough.
+
+        It's even dumbier when I look back and remember this
+        was one my first iterations."""
+        div = 2
+        while True:
+            if num % div == 0 and num != 2 or num < 2:
+                return False
+            else:
+                div += 1
+                if div >= num or num == 2:
+                    return True
+               
     def prime_print(self, num, loop):
         """Only prints prime numbers up to n times.
         Passing a negative value to loop causes it to loop indefinitely."""          
@@ -122,8 +135,12 @@ class Primes:
         return num
 
 class Benchmark:
-    points = 25000 ## 25k default. Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
-    numbers = range(10_000_000) ## 10kk default. Tied-up to points (25k). Changing this also changes final score.
+    # Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
+    points = 25000 # 25.000 default. 
+
+    # Tied-up to points (25.000). Changing this also changes final score.
+    numbers = range(10_000_000) # 10.000.000 default. Uses about 100MB of RAM.
+
     cpu_count = os.cpu_count()
     
     def singlecore_benchmark(self):
@@ -132,7 +149,7 @@ class Benchmark:
         start = time.time()
         pool.map(prime.prime_check, self.numbers)
         end = time.time()
-        print(end - start)
+        print(f"Test took {round(end - start, 2)} seconds.\n")
         return int(self.points / (end - start))
 
     def multicore_benchmark(self):
@@ -141,14 +158,16 @@ class Benchmark:
         start = time.time()
         pool.map(prime.prime_check, self.numbers)
         end = time.time()
+        print(f"Test took {round(end - start, 2)} seconds.\n")
         return int(self.points / (end - start))
     
     def cpu_synthetic_load(self):
-        """Synthetic CPU load using prime calculation."""
-        load = range(99_999_999)
+        """Synthetic CPU load using prime calculation.""" 
         pool = multiprocessing.Pool(processes=self.cpu_count)
         while True:
-            pool.map(prime.prime_check, load)
+            # Using dumb_prime_check here makes the thread usage graph look flat. 
+            # Thanks to Lucas for the idea.
+            pool.map(prime.dumb_prime_check, self.numbers)
 
 def ensure_int(string):
     """Works like input(), but ensures the input is an integer.
