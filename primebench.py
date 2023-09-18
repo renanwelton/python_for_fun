@@ -1,6 +1,9 @@
-## TO-DO: 
-## Show temps in real-time upon callig any Benchmark() method
-## Pseudo GUI in the likes of cfdisk (Maybe someday)
+# TO-DO:
+# Remove loop from ensure_int
+# If GUI is too much, try a simple menu rework
+# Pass only odd numbers to primes_between
+# Show temps in real-time upon callig any Benchmark() method
+# Pseudo GUI in the likes of cfdisk (Maybe someday)
 
 import math
 import time
@@ -66,11 +69,24 @@ class Primes:
         Returns 'None' if the are no primes between the given numbers."""
         primes_list = []
         if num_1 < num_2:
-            for i in range(num_1 + 1, num_2):
+            # Everythig from this point down to the for loop should be replaced with a function.
+            if num_1 < 2:
+                primes_list.append(2)
+                num_1 = 2
+            if not num_1 % 2 == 0:
+                num_1 += 1 # Adds 1 to odd numbers.
+            num_1 += 1 # Makes range start from next number.
+            for i in range(num_1, num_2, 2):
                 if self.prime_check(i):
                     primes_list.append(i)
         elif num_1 > num_2:
-            for i in range(num_2 + 1, num_1):
+            if num_2 < 2:
+                primes_list.append(2)
+                num_2 = 2
+            if not num_2 % 2 == 0:
+                num_2 += 1
+            num_2 += 1
+            for i in range(num_2, num_1, 2):
                 if self.prime_check(i):
                     primes_list.append(i)
         else:
@@ -108,9 +124,9 @@ class Primes:
             return False
         
         temp_list = pool.map(self.list_prime_check, num_range)
-        for i in range(len(temp_list)):
-            if not temp_list[i] == None:
-                primes_list.append(temp_list[i])
+        for item in temp_list:
+            if not temp_list[item] == None:
+                primes_list.append(temp_list[item])
 
         if len(primes_list) == 0:
             return None
@@ -134,13 +150,12 @@ class Primes:
             num -= 1
         return num
 
+
 class Benchmark:
     # Uses AMD's R5-5600 singlethreaded performance as baseline for a score close to 1000 points.
     points = 25000 # 25.000 default. 
-
     # Tied-up to points (25.000). Changing this also changes final score.
     numbers = range(10_000_000) # 10.000.000 default. Uses about 100MB of RAM.
-
     cpu_count = os.cpu_count()
     
     def singlecore_benchmark(self):
